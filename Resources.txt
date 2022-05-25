@@ -1,0 +1,1 @@
+https://stackoverflow.com/questions/41113388/interacting-with-a-usb-device-in-golang

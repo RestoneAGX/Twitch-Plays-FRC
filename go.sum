@@ -1,2 +1,4 @@
 github.com/gempir/go-twitch-irc/v3 v3.1.0 h1:bUVZ5mADhH7KidJVcl+z79kgLJ7sjdAk4b/ylAvaLy0=
 github.com/gempir/go-twitch-irc/v3 v3.1.0/go.mod h1:/W9KZIiyizVecp4PEb7kc4AlIyXKiCmvlXrzlpPUytU=
+github.com/google/gousb v1.1.2 h1:1BwarNB3inFTFhPgUEfah4hwOPuDz/49I0uX8XNginU=
+github.com/google/gousb v1.1.2/go.mod h1:GGWUkK0gAXDzxhwrzetW592aOmkkqSGcj5KLEgmCVUg=
