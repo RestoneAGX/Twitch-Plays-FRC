@@ -28,17 +28,15 @@ func main() {
 }
 
 func ConnectToRoboRio(message chan comms) {
-	// Obtain connection
 	conn, err := net.Dial("tcp", "10.20.68.2:1735") // Change the port depending on which port is hosted on the RoboRio
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	// Check for receiving Data && intepret
-	msg := <-message
+	msg := <-message // Check for receiving Data && intepret
 	if msg.path != "" {
-		//Send to Path Planner
-		conn.Write([]byte("Path:" + msg.path))
+		//Maybe parse this first and then send, depending on the efficiency and reqs
+		conn.Write([]byte("P:" + msg.path +"\n")) //Send to Path Planner
 	}
 
 	// Call commands accordingly
@@ -55,18 +53,19 @@ func ConnectToTwitch(bridge chan comms) {
 				return
 			}
 
-			if message.Message[0] == '#' {
-				bridge <- comms{0, message.Message} //Send this data to RoboRio so it can actually be parsed
-				//Maybe parse this first and then send, depending on the efficiency and reqs
-				return
-			}
-
 			inputs := strings.Split(message.Message[1:], " ")
 			switch inputs[0] {
 			case "u":
 			case "d":
 			case "r":
 			case "l":
+			case "ul":
+			case "ur":
+			case "dl":
+			case "dr":
+			case "#":
+				bridge <- comms{0, message.Message} //Send this data to RoboRio so it can actually be parsed
+				return
 			}
 		}()
 
