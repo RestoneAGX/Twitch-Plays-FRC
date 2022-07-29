@@ -95,7 +95,7 @@ func ConnectToTwitch(bridge chan comms) {
 }
 
 func ConnectToRoboRio(message chan comms) {
-	// Obtain connection
+	// Obtain connection [Maybe use USB later]
 	conn, err := net.Dial("tcp", "10.20.68.2:1735") // Change the port depending on which port is hosted on the RoboRio
 	if err != nil {
 		fmt.Println(err)
