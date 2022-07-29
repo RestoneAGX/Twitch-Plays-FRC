@@ -1,0 +1,6 @@
+RoboRio should:
+> take the input sent by the pi/program
+> check the command portion {
+    if 0 -> Path
+    else use the number to determine the paramaters to input to the drive command
+}
