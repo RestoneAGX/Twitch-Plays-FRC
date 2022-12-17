@@ -3,15 +3,17 @@ package main
 import (
 	"fmt"
 	"net"
+    "math"
 	"strconv"
 	"strings"
-
-	"github.com/gempir/go-twitch-irc/v3"
+    "encoding/binary"
+    "github.com/gempir/go-twitch-irc/v3"
 )
 
 type comms struct {
-	command, amount int8
-	path            string
+	angle    uint16
+    distance float
+	path     string
 }
 
 // PATH is if string is != nil
@@ -49,27 +51,23 @@ func ConnectToTwitch(bridge chan comms) {
 				return
 			}
 			amount, err := strconv.Atoi(inputs[1])
-			if err != nil {
+            if err != nil {
 				client.Say("redstoneagx", "Invalid Input: "+message.User.DisplayName) // Tell the user invalid input
 				return
 			}
 
-			var dir int8
-			switch inputs[0] {
-			case "u":
-				dir = 0
-			case "d":
-				dir = 1
-			case "ur":
-				dir = 2
-			case "ul":
-				dir = 3
-			case "dr":
-				dir = 4
-			case "dl":
-				dir = 5
-			}
-			bridge <- comms{dir, int8(amount), ""}
+            distance, err := strconv.ParseFloat(inputs[1], 8)
+            if err != nil {
+				client.Say("redstoneagx", "Invalid Input: "+message.User.DisplayName) // Tell the user invalid input
+				return
+            }
+            angle, err := strconv.ParseUint(inputs[0], 10, 16)
+            if err != nil {
+				client.Say("redstoneagx", "Invalid Input: "+message.User.DisplayName) // Tell the user invalid input
+				return
+            }
+
+            bridge <- comms{angle, distance, ""}
 		}()
 
 		if message.Message == "!shutdown" && message.User.DisplayName == "RedstoneAGX" {
@@ -100,11 +98,14 @@ func ConnectToRoboRio(message chan comms) {
 	if err != nil {
 		fmt.Println(err)
 	}
+    msg_buffer := make([]byte, 6)
 
 	for {
 		msg := <-message // Check for receiving Data && intepret
 		if msg.path == "" {
-			conn.Write([]byte{byte(msg.command), byte(msg.amount)}) // Call commands accordingly
+            binary.BigEndian.Uint16(msg_buffer[:2], msg.angle)
+            binary.BigEndian.Uint32(msg_Buffer[2:], math.Float32bits(msg.distance))
+            conn.Write(buffer) // Call commands accordingly
 		} else if msg.path == "ex" {
 			break
 		} else {
